@@ -13,6 +13,16 @@ namespace Backend.ViewModel
 
     }
 
+    public class AnimalAddViewModel
+    {
+        public string Name { get; set; }
+        public string Image { get; set; }
+
+    }
+
+
+
+
     public class ProductViewModel
     {
         public int Id { get; set; }
@@ -23,3 +33,6 @@ namespace Backend.ViewModel
 
     }
 }
+
+
+

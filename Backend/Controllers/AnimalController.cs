@@ -10,14 +10,10 @@ namespace Backend.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
-    
+
     public class AnimalController : ControllerBase
     {
-        //Get api/animal/serch
-        [HttpGet("search")]
-        public IActionResult Get()
-        {
-            List<AnimalViewModel> model = new List<AnimalViewModel>
+        static List<AnimalViewModel> data = new List<AnimalViewModel>
             {
                 new AnimalViewModel{
                     Id=4,
@@ -35,8 +31,29 @@ namespace Backend.Controllers
                     Name="Опосум",
                     Image="https://i.ytimg.com/vi/MdahcBvWqNU/maxresdefault.jpg"
                 }
-            };
-            return Ok(model);
+                  };
+        //Get api/animal/serch
+        [HttpGet("search")]
+        public IActionResult Get()
+        {
+
+            return Ok(data);
+
+        }
+        //Get api/animal/add
+        [HttpPost("add")]
+        public IActionResult Post([FromBody] AnimalAddViewModel model)
+        {
+            Random rand = new Random();
+
+            data.Add(new AnimalViewModel
+            {
+                Id = rand.Next(10, 342123),
+                Name = model.Name,
+                Image = model.Image,
+            });
+
+            return Ok();
 
         }
 
