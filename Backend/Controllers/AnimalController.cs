@@ -6,7 +6,7 @@ using Backend.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Backend.DAL.Entities;
-
+using System.Threading;
 
 namespace Backend.Controllers
 {
@@ -53,7 +53,7 @@ namespace Backend.Controllers
                      Name = a.Name,
                      Image = a.Image
                  }).ToList();
-
+            Thread.Sleep(3000);
             return Ok(model);
 
         }
@@ -71,7 +71,5 @@ namespace Backend.Controllers
             return Ok();
 
         }
-
-
     }
 }
