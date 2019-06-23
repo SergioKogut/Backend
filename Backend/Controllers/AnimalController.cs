@@ -53,12 +53,12 @@ namespace Backend.Controllers
                      Name = a.Name,
                      Image = a.Image
                  }).ToList();
-            Thread.Sleep(3000);
+            Thread.Sleep(3000);   
             return Ok(model);
 
         }
         //Get api/animal/add
-        [HttpPost("add")]
+        [HttpPost("create")]
         public IActionResult Post([FromBody] AnimalAddViewModel model)
         {
             //Random rand = new Random();
@@ -68,6 +68,7 @@ namespace Backend.Controllers
                 Image = model.Image
             });
             _context.SaveChanges();
+            Thread.Sleep(3000);
             return Ok();
 
         }
