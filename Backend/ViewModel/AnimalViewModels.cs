@@ -10,6 +10,7 @@ namespace Backend.ViewModel
         public int Id { get; set; }
         public string Name { get; set; }
         public string Image { get; set; }
+        public int ImageLikeCount { get; set; }
 
     }
 
@@ -18,7 +19,17 @@ namespace Backend.ViewModel
         public string Name { get; set; }
         public string Image { get; set; }
 
+        
     }
+
+    public class AnimalAddLikeViewModel
+    {
+        public int Id { get; set; }
+      
+        public int ImageLikeCount { get; set; }
+    }
+
+
 
 
 

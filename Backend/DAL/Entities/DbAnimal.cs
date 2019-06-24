@@ -16,5 +16,9 @@ namespace Backend.DAL.Entities
         public string Name { get; set; }
         [StringLength(1000)]
         public string Image { get; set; }
+
+        public int ImageLikeCount { get; set; }
+
+
     }
 }
