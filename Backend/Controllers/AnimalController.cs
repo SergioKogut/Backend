@@ -54,7 +54,6 @@ namespace Backend.Controllers
                      Image = a.Image,
                      ImageLikeCount=a.ImageLikeCount
                  }).ToList();
-            Thread.Sleep(1000);   
             return Ok(model);
 
         }
@@ -69,28 +68,27 @@ namespace Backend.Controllers
                 Image = model.Image
             });
             _context.SaveChanges();
-            Thread.Sleep(1000);
             return Ok();
 
         }
 
-        //Put api/animal/addlike
-        [HttpPut("{id}")]
-        public IActionResult Put([FromRoute] int id, [FromBody] AnimalAddLikeViewModel model)
+        //Put api/animal/addlike/{id}
+        [HttpPut("addlike/{id}")]
+        public IActionResult Put([FromRoute] int id)
         {
            
             var animal = _context.Animals.SingleOrDefault(x => x.Id == id);
 
             if (animal == null)
-                return BadRequest(new { invalid = "Category is not found" });
+                return BadRequest(new { invalid = "Animal is not found" });
 
-            animal.ImageLikeCount = model.ImageLikeCount;
+            animal.ImageLikeCount = animal.ImageLikeCount+1;
 
             _context.Update(animal);
 
             _context.SaveChanges();
 
-            return Ok();
+            return Ok(id);
         }
 
 
