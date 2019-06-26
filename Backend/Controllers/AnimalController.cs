@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Backend.DAL.Entities;
 using System.Threading;
+using Backend.Helpers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace Backend.Controllers
 {
@@ -16,10 +21,16 @@ namespace Backend.Controllers
     public class AnimalController : ControllerBase
 
     {
+        
         private readonly EFContext _context;
-        public AnimalController(EFContext context)
+        private readonly IConfiguration _configuration;
+        private readonly IHostingEnvironment _env;
+        public AnimalController(EFContext context, IHostingEnvironment env,
+            IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
+            _env = env;
         }
         //static List<AnimalViewModel> data = new List<AnimalViewModel>
         //    {
@@ -90,6 +101,43 @@ namespace Backend.Controllers
 
             return Ok(id);
         }
+
+        [HttpPost("add-base64")]
+        public IActionResult AdBase64([FromBody] AnimalAddViewModel model)
+        {
+            string imageName = Guid.NewGuid().ToString() + ".jpg";
+            string base64 = model.Image;
+            if (base64.Contains(","))
+            {
+                base64 = base64.Split(',')[1];
+            }
+
+            var bmp = base64.FromBase64StringToImage();
+            string fileDestDir = _env.ContentRootPath;
+            fileDestDir = Path.Combine(fileDestDir, _configuration.GetValue<string>("ImagesPath"));
+
+            string fileSave = Path.Combine(fileDestDir, imageName);
+            if (bmp != null)
+            {
+                int size = 200;
+                var image = ImageHelper.CompressImage(bmp, size, size);
+                image.Save(fileSave, ImageFormat.Jpeg);
+            }
+
+
+            //Random rand = new Random();
+            //_context.Animals.Add(new DbAnimal
+            //{
+            //    Name = model.Name,
+            //    Image = model.Image
+            //});
+            //_context.SaveChanges();
+
+
+            return Ok();
+
+        }
+
 
 
 
