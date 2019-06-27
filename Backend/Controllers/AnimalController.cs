@@ -56,13 +56,17 @@ namespace Backend.Controllers
         [HttpGet("search")]
         public IActionResult Get()
         {
+           // string fileDestDir = _env.ContentRootPath;
+           string frontandurl = _configuration.GetValue<string>("FrontandUrl");
 
+
+            string sImg = "300_";
             List<AnimalViewModel> model = _context.Animals
                  .Select(a => new AnimalViewModel
                  {
                      Id = a.Id,
                      Name = a.Name,
-                     Image = a.Image,
+                     Image = frontandurl+"/Images/" + sImg + a.Image,
                      ImageLikeCount=a.ImageLikeCount
                  }).ToList();
             return Ok(model);
@@ -105,6 +109,10 @@ namespace Backend.Controllers
         [HttpPost("add-base64")]
         public IActionResult AdBase64([FromBody] AnimalAddViewModel model)
         {
+           
+            var sizes = _configuration.GetValue<string>("ImagesSizes").Split(' ');
+
+
             string imageName = Guid.NewGuid().ToString() + ".jpg";
             string base64 = model.Image;
             if (base64.Contains(","))
@@ -116,22 +124,25 @@ namespace Backend.Controllers
             string fileDestDir = _env.ContentRootPath;
             fileDestDir = Path.Combine(fileDestDir, _configuration.GetValue<string>("ImagesPath"));
 
-            string fileSave = Path.Combine(fileDestDir, imageName);
-            if (bmp != null)
+            foreach (var element in sizes)
             {
-                int size = 200;
-                var image = ImageHelper.CompressImage(bmp, size, size);
-                image.Save(fileSave, ImageFormat.Jpeg);
+                string fileSave = Path.Combine(fileDestDir, element+"_"+imageName);
+                if (bmp != null)
+                {
+                    int size = Convert.ToInt32(element);
+                    var image = ImageHelper.CompressImage(bmp, size, size);
+                    image.Save(fileSave, ImageFormat.Jpeg);
+                }
+
             }
 
+            _context.Animals.Add(new DbAnimal
+            {
+                Name = model.Name,
+                Image = imageName
+            });
+            _context.SaveChanges();
 
-            //Random rand = new Random();
-            //_context.Animals.Add(new DbAnimal
-            //{
-            //    Name = model.Name,
-            //    Image = model.Image
-            //});
-            //_context.SaveChanges();
 
 
             return Ok();
