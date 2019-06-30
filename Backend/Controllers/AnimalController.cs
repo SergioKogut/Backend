@@ -149,7 +149,25 @@ namespace Backend.Controllers
 
         }
 
+        [HttpDelete("delete/{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var animal = _context.Animals.SingleOrDefault(x => x.Id == id);
+            if (animal == null)
+            {
+                return BadRequest(new { invalid = "Animal is not found" });
+            }
+
+            _context.Remove(animal);
+            _context.SaveChanges();
+
+            return Ok(animal.Id);
+        }
 
 
 
